@@ -61,3 +61,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnClear.setOnClickListener(this);
         btnEquals.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View view) {
+        Button button = (Button) view;
+        String buttonText = button.getText().toString();
+
+        // Handle numeric buttons
+        if (buttonText.matches("[0-9]")) {
+            etInput.append(buttonText);
+        }
+
+        // Handle operator buttons
+        switch (button.getId()) {
+            case R.id.btnAdd:
+            case R.id.btnSubtract:
+            case R.id.btnMultiply:
+            case R.id.btnDivide:
+                operator = buttonText;
+                firstValue = Double.parseDouble(etInput.getText().toString());
+                etInput.setText("");
+                isOperatorClicked = true;
+                break;
+
+            case R.id.btnClear:
+                etInput.setText("");
+                operator = "";
+                firstValue = 0;
+                isOperatorClicked = false;
+                break;
+
+            case R.id.btnEquals:
+                if (isOperatorClicked) {
+                    double secondValue = Double.parseDouble(etInput.getText().toString());
+                    double result = 0;
+
+                    switch (operator) {
+                        case "+":
+                            result = firstValue + secondValue;
+                            break;
+                        case "-":
+                            result = firstValue - secondValue;
+                            break;
+                        case "*":
+                            result = firstValue * secondValue;
+                            break;
+                        case "/":
+                            if (secondValue != 0) {
+                                result = firstValue / secondValue;
+                            } else {
+                                etInput.setText("Error");
+                            }
+                            break;
+                    }
+
+                    etInput.setText(String.valueOf(result));
+                    operator = "";
+                    firstValue = result;
+                    isOperatorClicked = false;
+                }
+                break;
+        }
+    }
+}
